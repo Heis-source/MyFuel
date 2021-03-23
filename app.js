@@ -4,9 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var app = express();
-const server = require('http').Server(app);
 
-const mongooseConnection = require('./lib/connectMongo');
+//const mongooseConnection = require('./lib/connectMongo');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

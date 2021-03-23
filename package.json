@@ -22,7 +22,9 @@
     "jade": "~1.11.0",
     "mongoose": "^5.12.2",
     "morgan": "^1.9.1",
+    "node-telegram-bot-api": "^0.51.0",
     "nodemon": "^2.0.7",
-    "pm2": "^4.5.5"
+    "pm2": "^4.5.5",
+    "socks5-https-client": "^1.2.1"
   }
 }
