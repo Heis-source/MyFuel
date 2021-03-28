@@ -16,7 +16,6 @@ bot.onText(/^\/start/, function(msg){
 
 bot.on('location', function(msg){
     var chatId = msg.chat.id;
-    bot.sendMessage(chatId, "Dejame un momento, ahora te paso la ubicacion.");
 
     mongooseConnection.collection("fuels").find({}).toArray(function(err, result) {
         if (err) throw err;
@@ -27,36 +26,26 @@ bot.on('location', function(msg){
         for (let i = 0; i < result.length; i++) {
             const longitud = parseFloat(result[i]["Longitud (WGS84)"].replace(",", "."));
             const latitud = parseFloat(result[i]["Latitud"].replace(",", "."));
-            const longitudT = parseFloat(msg.location.latitude)
+            const longitudT = parseFloat(msg.location.longitude)
             const latitudT = parseFloat(msg.location.latitude)
-            const _id = result[i]["_id"];
-
-            function rad (x) {
-                return x * Math.PI / 180;
-            }
+            const infoTotal = result[i];
         
-            const R = 6378.137;//Radio de la tierra en km
-            const dLat = rad(parseFloat(latitudT - latitud));
-            const dLong = rad(parseFloat(longitudT - longitud));
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(rad(latitud)) * Math.cos(rad(latitudT)) * Math.sin(dLong / 2) * Math.sin(dLong / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            const d = R * c;
-            const distanceCalc = d.toFixed(10);//Retorna tres decimale
+            const distanceCalc = Math.sqrt((longitud - longitudT) ** 2 + (latitud - latitudT) ** 2);
             
-            distance.push({_id, distanceCalc})
+            distance.push({infoTotal, distanceCalc})
         }
 
         distance.sort(function(a, b) {
             return a.distanceCalc - b.distanceCalc;
         });
 
+        console.log(distance);
+
         for (let i = 0; i < 5; i++) {
-            let toSearch = distance[i]['_id']
-            mongooseConnection.collection("fuels").findOne({ _id: toSearch }).toArray(function(err, result) { 
-                telegramMSG.push(result);
-            })
-            
-            console.log(telegramMSG)
+            console.log(distance[i]);
+            console.log(parseFloat(msg.location.latitude))
+            console.log(parseFloat(msg.location.longitude))
+            //bot.sendMessage(chatId, "Direccion:\n<a href='http://www.google.com/maps/place/" + distance[i].infoTotal["Latitud"].replace(",", ".") + "," + distance[i].infoTotal["Longitud (WGS84)"].replace(",", ".") + "'>" + distance[i].infoTotal["Dirección"] + "</a>" , { parse_mode : "HTML", disable_web_page_preview : true });
         }
     })
 })

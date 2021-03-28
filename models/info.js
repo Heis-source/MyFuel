@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const FuelSchema = mongoose.Schema({
     Fecha: Date,
-    Direccion: String,
+    Dirección: String,
     Horario: String,
     Latitud: String,
     "Longitud (WGS84)": String,
