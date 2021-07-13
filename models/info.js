@@ -24,6 +24,7 @@ const FuelSchema = mongoose.Schema({
     'Precio Gasolina 98 E5': String,
     'Precio Hidrogeno': String,
     Provincia: String,
+    Rotulo: String,
 });
 
 const Fuel = mongoose.model('Fuel', FuelSchema);

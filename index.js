@@ -3,10 +3,11 @@
 const TelegramBot = require('node-telegram-bot-api');
 const FuelSchema = require('./models/info');
 const mongooseConnection = require('./lib/connectMongo');
-
+const {Client} = require("@googlemaps/google-maps-services-js");
 require('dotenv').config();
 
 const bot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true })
+const client = new Client({});
 
 bot.onText(/^\/start/, function(msg){
     var chatId = msg.chat.id;
@@ -39,13 +40,26 @@ bot.on('location', function(msg){
             return a.distanceCalc - b.distanceCalc;
         });
 
-        console.log(distance);
-
         for (let i = 0; i < 5; i++) {
-            console.log(distance[i]);
+            client
+                .elevation({
+                    params: {
+                    locations: [{ lat: parseFloat(msg.location.latitude), lng: parseFloat(msg.location.longitude) }],
+                    key: process.env.GOOGLE_API_TOKEN,
+                    },
+                    timeout: 1000, // milliseconds
+                })
+                .then((r) => {
+                    console.log(r.data.results[0].elevation);
+                })
+                .catch((e) => {
+                    console.log(e.response.data.error_message);
+                });
+            //console.log(client);
+            /*console.log(distance[i]);
             console.log(parseFloat(msg.location.latitude))
-            console.log(parseFloat(msg.location.longitude))
-            //bot.sendMessage(chatId, "Direccion:\n<a href='http://www.google.com/maps/place/" + distance[i].infoTotal["Latitud"].replace(",", ".") + "," + distance[i].infoTotal["Longitud (WGS84)"].replace(",", ".") + "'>" + distance[i].infoTotal["Dirección"] + "</a>" , { parse_mode : "HTML", disable_web_page_preview : true });
+            console.log(parseFloat(msg.location.longitude))*/
+            bot.sendMessage(chatId, "Direccion:\n<a href='http://www.google.com/maps/place/" + distance[i].infoTotal["Latitud"].replace(",", ".") + "," + distance[i].infoTotal["Longitud (WGS84)"].replace(",", ".") + "'>" + distance[i].infoTotal["Dirección"] + "</a>" , { parse_mode : "HTML", disable_web_page_preview : true });
         }
     })
 })

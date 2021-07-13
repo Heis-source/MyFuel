@@ -8,7 +8,6 @@ const FuelSchema = require('../../models/info');
 const axios = require('axios');
 require('dotenv').config();
 
-
 cron.schedule('15 * * * * *', () => {
     console.log("Exec")
     axios.get('https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres')
