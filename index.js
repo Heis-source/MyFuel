@@ -9,6 +9,25 @@ require('dotenv').config();
 const bot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true })
 const client = new Client({});
 
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+function finalDistanceMatrix (originLat, originLng, destLat, destLng) {
+    client
+        .distancematrix({
+            params: {
+                origins: [{ lat: originLat, lng: originLng }],
+                destinations: [{ lat: destLat, lng: destLng }],
+                key: process.env.GOOGLE_API_TOKEN,
+            },
+            timeout: 1000, // milliseconds
+        })
+        .then((response) => {
+            response.data;
+        })
+}
+
 bot.onText(/^\/start/, function(msg){
     var chatId = msg.chat.id;
     var username = msg.from.username;
@@ -22,13 +41,16 @@ bot.on('location', function(msg){
         if (err) throw err;
 
         let distance = [];
-        let telegramMSG = [];
+        let longitudT;
+        let latitudT;
+        let longitud;
+        let latitud;
 
         for (let i = 0; i < result.length; i++) {
-            const longitud = parseFloat(result[i]["Longitud (WGS84)"].replace(",", "."));
-            const latitud = parseFloat(result[i]["Latitud"].replace(",", "."));
-            const longitudT = parseFloat(msg.location.longitude)
-            const latitudT = parseFloat(msg.location.latitude)
+            longitud = parseFloat(result[i]["Longitud (WGS84)"].replace(",", "."));
+            latitud = parseFloat(result[i]["Latitud"].replace(",", "."));
+            longitudT = parseFloat(msg.location.longitude)
+            latitudT = parseFloat(msg.location.latitude)
             const infoTotal = result[i];
         
             const distanceCalc = Math.sqrt((longitud - longitudT) ** 2 + (latitud - latitudT) ** 2);
@@ -40,26 +62,18 @@ bot.on('location', function(msg){
             return a.distanceCalc - b.distanceCalc;
         });
 
-        for (let i = 0; i < 5; i++) {
-            client
-                .elevation({
-                    params: {
-                    locations: [{ lat: parseFloat(msg.location.latitude), lng: parseFloat(msg.location.longitude) }],
-                    key: process.env.GOOGLE_API_TOKEN,
-                    },
-                    timeout: 1000, // milliseconds
-                })
-                .then((r) => {
-                    console.log(r.data.results[0].elevation);
-                })
-                .catch((e) => {
-                    console.log(e.response.data.error_message);
-                });
-            //console.log(client);
-            /*console.log(distance[i]);
-            console.log(parseFloat(msg.location.latitude))
-            console.log(parseFloat(msg.location.longitude))*/
-            bot.sendMessage(chatId, "Direccion:\n<a href='http://www.google.com/maps/place/" + distance[i].infoTotal["Latitud"].replace(",", ".") + "," + distance[i].infoTotal["Longitud (WGS84)"].replace(",", ".") + "'>" + distance[i].infoTotal["Dirección"] + "</a>" , { parse_mode : "HTML", disable_web_page_preview : true });
+        for (let i = 0; i < 1; i++) {
+            const finalLat = parseFloat(distance[i].infoTotal["Latitud"].replace(",", "."))
+            const finalLng = parseFloat(distance[i].infoTotal["Longitud (WGS84)"].replace(",", "."))
+            const finalAddress = capitalize(distance[i].infoTotal["Dirección"]);
+            const gasoleoPrice = distance[i].infoTotal["Precio Gasoleo A"];
+            const gasolina95Price = distance[i].infoTotal["Precio Gasolina 95 E5"];
+            const gasolina98Price = distance[i].infoTotal["Precio Gasolina 98 E5"];
+            const distanceMatrixData = finalDistanceMatrix(latitudT, longitudT, finalLat, finalLng);
+
+            console.log(distanceMatrixData);
+
+            bot.sendMessage(chatId,"<a href='http://www.google.com/maps/place/" + finalLat + "," + finalLng + "'>" + finalAddress + "</a>\n" + "Diesel: " + gasoleoPrice + "€    " + "G95: " + gasolina95Price + "€    " + "G98: " +  gasolina98Price + "\n", { parse_mode : "HTML", disable_web_page_preview : true });
         }
     })
 })
