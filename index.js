@@ -71,36 +71,10 @@ bot.on('location', function(msg) {
             const gasoleoPrice = distanceArray[i].infoTotal["Precio Gasoleo A"];
             const gasolina95Price = distanceArray[i].infoTotal["Precio Gasolina 95 E5"];
             const gasolina98Price = distanceArray[i].infoTotal["Precio Gasolina 98 E5"];
+            const rotulo = distanceArray[i].infoTotal["Rótulo"];
+            console.log(distanceArray[i].infoTotal)
 
-            const origins = [`${latitudT},${longitudT}`];
-            const destinations = [`${latitud},${longitud}`];
-
-            distance.key(process.env.GOOGLE_API_TOKEN);
-
-            distance.matrix(origins, destinations, function (err, distances) {
-                if (err) {
-                    return console.log(err);
-                }
-                if(!distances) {
-                    return console.log('no distances');
-                }
-                if (distances.status == 'OK') {
-                    for (var i=0; i < origins.length; i++) {
-                        for (var j = 0; j < destinations.length; j++) {
-                            var origin = distances.origin_addresses[i];
-                            var destination = distances.destination_addresses[j];
-                            if (distances.rows[0].elements[j].status == 'OK') {
-                                var distanceM = distances.rows[i].elements[j].distance.text;
-                                return distanceM
-                            } else {
-                                console.log(destination + ' is not reachable by land from ' + origin);
-                            }
-                        }
-                    }
-                }
-            });
-            console.log(distance)
-            bot.sendMessage(chatId,"<a href='http://www.google.com/maps/place/" + finalLat + "," + finalLng + "'>" + finalAddress + "</a>\n" + "Diesel: " + gasoleoPrice + "€    " + "G95: " + gasolina95Price + "€    " + "G98: " +  gasolina98Price + "\n", { parse_mode : "HTML", disable_web_page_preview : true });
+            bot.sendMessage(chatId,"<a href='http://www.google.com/maps/place/" + finalLat + "," + finalLng + "'>" + rotulo + " - " + finalAddress + "</a>\n" + "Diesel: " + gasoleoPrice + "€    " + "G95: " + gasolina95Price + "€    " + "G98: " +  gasolina98Price + "\n", { parse_mode : "HTML", disable_web_page_preview : true });
         }
     })
 })
