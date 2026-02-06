@@ -32,6 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.locals.title = 'MyFuel';
 
 app.use('/apiv1/data', require('./router/apiv1/data'));
+app.use('/apiv1/chargers', require('./router/apiv1/chargers'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
