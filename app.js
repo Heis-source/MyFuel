@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var app = express();
 
-const mongooseConnection = require('./lib/connectMongo');
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -16,11 +16,13 @@ app.engine('html', require('ejs').__express);
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Methods', 'GET, PATCH, PUT, POST, DELETE, OPTIONS');
+  
+  // Responder a solicitudes pre-flight
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
   next();
-  app.options('*', (req, res) => {
-    res.header('Access-Control-Allow-Methods', 'GET, PATCH, PUT, POST, DELETE, OPTIONS');
-    res.send();
-  });
 });
 
 app.use(logger('dev'));
@@ -31,8 +33,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.locals.title = 'MyFuel';
 
-app.use('/apiv1/data', require('./router/apiv1/data'));
+
 app.use('/apiv1/chargers', require('./router/apiv1/chargers'));
+app.use('/apiv1/nearby', require('./router/apiv1/nearby'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
