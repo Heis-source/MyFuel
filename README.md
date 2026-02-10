@@ -1,61 +1,105 @@
-# MyFuel
+# MyFuel 🚗⚡
 
-MyFuel es una aplicación Node.js que combina un servidor Express y un bot de Telegram para ayudarte a encontrar las gasolineras más baratas cercanas. Utiliza datos abiertos del Ministerio para consultar los precios y los almacena en MongoDB.
+Plataforma para encontrar gasolineras y cargadores eléctricos cercanos con precios en tiempo real.
 
-## Requisitos
+## 🧩 Componentes
 
-- Node.js
-- MongoDB en ejecución
+| Componente       | Tecnología            | Descripción                                          |
+| ---------------- | --------------------- | ---------------------------------------------------- |
+| **Backend API**  | Node.js + Express     | API REST que sirve datos de gasolineras y cargadores |
+| **Bot Telegram** | node-telegram-bot-api | Bot que envía precios al compartir ubicación         |
+| **App Android**  | Kotlin + MVVM         | App nativa con Google Maps                           |
+| **App iOS**      | Swift + SwiftUI       | App nativa con Apple Maps                            |
 
-## Instalación
+## 📁 Estructura del Proyecto
+
+```
+MyFuel/
+├── index.js                 # Entry point (Bot + API server)
+├── app.js                   # Express app configuration
+├── package.json             # Dependencias Node.js
+├── ecosystem.config.js      # Configuración PM2
+├── .env                     # Variables de entorno
+├── lib/
+│   ├── botHandlers.js       # Handlers del bot Telegram
+│   ├── chargerService.js    # Servicio de cargadores EV (DGT XML)
+│   ├── fuelService.js       # Servicio de gasolineras (Ministerio)
+│   ├── supabaseClient.js    # Cliente Supabase
+│   └── utils.js             # Utilidades compartidas
+├── router/apiv1/
+│   ├── nearby.js            # GET /apiv1/nearby?lat=&lon=
+│   └── chargers.js          # GET /apiv1/chargers
+├── android-native/          # App Android nativa (ver README propio)
+└── ios-native/              # App iOS nativa (ver README propio)
+```
+
+## 🚀 Instalación
 
 ```bash
+# Clonar el repositorio
+git clone <url-del-repo>
+cd MyFuel
+
+# Instalar dependencias
 npm install
 ```
 
-Crea un archivo `.env` en la raíz con las siguientes variables:
+## ⚙️ Configuración
 
-```
-MONGODB_CONNECTION=<cadena de conexión de MongoDB>
+Crea un archivo `.env` en la raíz:
+
+```env
 TELEGRAM_API_TOKEN=<token del bot de Telegram>
-GOOGLE_API_TOKEN=<token de Google (opcional)>
-PORT=<puerto opcional para Express>
+SUPABASE_URL=<URL de tu proyecto Supabase>
+SUPABASE_KEY=<API key anon de Supabase>
 ```
 
-## Puesta en marcha
-
-En desarrollo puedes ejecutar:
+## ▶️ Ejecución
 
 ```bash
+# Desarrollo (con hot reload)
 npm run dev
-```
 
-Para producción:
-
-```bash
+# Producción
 npm start
+
+# Con PM2 (recomendado para producción)
+npx pm2 start ecosystem.config.js
 ```
 
-El bot de Telegram se lanza desde `index.js`. Si se desea ejecutarlo de forma independiente:
+## 📡 API Endpoints
+
+| Método | Ruta              | Parámetros   | Descripción                       |
+| ------ | ----------------- | ------------ | --------------------------------- |
+| GET    | `/apiv1/nearby`   | `lat`, `lon` | Gasolineras y cargadores cercanos |
+| GET    | `/apiv1/chargers` | —            | Todos los cargadores EV de España |
+
+### Ejemplo
 
 ```bash
-node index.js
+curl "http://localhost:3000/apiv1/nearby?lat=43.2627&lon=-2.9253"
 ```
 
-## ¿Qué hace cada página?
+## 🤖 Bot Telegram
 
-El proyecto utiliza plantillas jade/ejs muy sencillas:
+1. Busca el bot en Telegram
+2. Envía `/start`
+3. Comparte tu ubicación
+4. Recibirás los precios de las 3 gasolineras más cercanas
 
-- `views/layout.jade`: plantilla base con la cabecera de la página.
-- `views/index.jade`: página de inicio con un saludo sencillo.
-- `views/error.jade`: muestra los errores de Express.
+## 📱 Apps Nativas
 
-Todo el estilo se encuentra en `public/stylesheets/style.css`.
+- **Android**: Abre `android-native/` en Android Studio → [README](android-native/README.md)
+- **iOS**: Abre `ios-native/MyFuel.xcodeproj` en Xcode → [README](ios-native/README.md)
 
-## Funcionamiento
+## 🔧 Tecnologías
 
-- Un cron en `router/apiv1/data.js` descarga cada minuto la información de precios y la guarda en MongoDB.
-- `index.js` gestiona un bot de Telegram que, al recibir tu ubicación, calcula cuál es la gasolinera más cercana y devuelve un enlace de Google Maps junto con los precios de combustible.
-- El servidor Express configurado en `app.js` sirve las páginas estáticas y ejecuta la ruta del cron.
+- **Backend**: Node.js, Express 5, Supabase
+- **Datos**: API del Ministerio (gasolineras) + DGT/MITERD (cargadores EV)
+- **Bot**: node-telegram-bot-api
+- **Android**: Kotlin, Google Maps SDK, Retrofit, MVVM
+- **iOS**: Swift 5.9, SwiftUI, MapKit, URLSession, MVVM
 
-Con esto ya tienes todo lo necesario para arrancar y probar **MyFuel**.
+## 📄 Licencia
+
+Proyecto privado.

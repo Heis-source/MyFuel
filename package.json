@@ -1,36 +1,25 @@
 {
   "name": "myfuel",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
+  "description": "Backend API + Telegram Bot for MyFuel (fuel stations & EV chargers)",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node ./bin/www",
-    "dev": "cross-env DEBUG=nodeapi:* NODE_ENV=development nodemon"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "dependencies": {
-    "@googlemaps/google-maps-services-js": "^3.1.16",
     "@supabase/supabase-js": "^2.95.3",
     "axios": "^1.13.5",
-    "connect-mongo": "^6.0.0",
     "cookie-parser": "^1.4.5",
-    "cote": "^1.2.0",
     "cross-env": "^7.0.3",
     "debug": "^2.6.9",
     "dotenv": "^17.2.4",
     "ejs": "^4.0.1",
-    "expo-location": "^19.0.8",
     "express": "^5.2.1",
-    "express-validator": "^7.3.1",
     "fast-xml-parser": "^5.3.4",
-    "google-distance-matrix": "^1.1.1",
     "http-errors": "^2.0.1",
-    "mongoose": "^9.1.6",
     "morgan": "^1.9.1",
-    "node-cron": "^3.0.0",
     "node-telegram-bot-api": "^0.67.0",
-    "nodemon": "^3.1.11",
-    "pm2": "^6.0.14",
-    "pug": "^3.0.3",
-    "react-native-maps": "^1.27.1",
-    "socks5-https-client": "^1.2.1"
+    "nodemon": "^3.1.11"
   }
 }
