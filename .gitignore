@@ -1,5 +1,14 @@
-node_modules
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.DS_Store
 
 # Android
 android-native/build/
@@ -7,7 +16,34 @@ android-native/app/build/
 android-native/.gradle/
 android-native/.idea/
 android-native/local.properties
+android-native/*.iml
 android-native/*.keystore
 android-native/keystore.properties
 android-native/*.apk
 android-native/*.aab
+
+# iOS / macOS
+ios-native/build/
+ios-native/DerivedData/
+ios-native/*.pbxuser
+ios-native/xcuserdata/
+ios-native/*.xcuserstate
+ios-native/*.xcworkspace
+!ios-native/*.xcodeproj/project.xcworkspace/
+ios-native/.build/
+ios-native/Pods/
+ios-native/fastlane/report.xml
+ios-native/fastlane/screenshots/**/*.png
+ios-native/*.ipa
+
+# Expo (legacy)
+mobile/.expo/
+mobile/node_modules/
+
+# Data dumps
+*.xml
+
+# Misc
+*.swp
+*~
+.vscode/

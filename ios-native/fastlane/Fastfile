@@ -1,0 +1,92 @@
+default_platform(:ios)
+
+platform :ios do
+
+  # ─────────────────────────────────────────────
+  # BETA → TestFlight
+  # ─────────────────────────────────────────────
+  desc "Envía una nueva build a TestFlight"
+  lane :beta do
+    increment_build_number(
+      build_number: latest_testflight_build_number + 1
+    )
+
+    build_app(
+      scheme: "MyFuel",
+      export_method: "app-store",
+      clean: true,
+      output_directory: "./build",
+      output_name: "MyFuel.ipa"
+    )
+
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true
+    )
+
+    slack(
+      message: "✅ MyFuel iOS beta enviada a TestFlight",
+      success: true
+    ) if ENV["SLACK_URL"]
+  end
+
+  # ─────────────────────────────────────────────
+  # RELEASE → App Store
+  # ─────────────────────────────────────────────
+  desc "Publica en App Store Connect"
+  lane :release do
+    increment_build_number(
+      build_number: latest_testflight_build_number + 1
+    )
+
+    build_app(
+      scheme: "MyFuel",
+      export_method: "app-store",
+      clean: true,
+      output_directory: "./build",
+      output_name: "MyFuel.ipa"
+    )
+
+    upload_to_app_store(
+      force: true,
+      skip_metadata: false,
+      skip_screenshots: true,
+      submit_for_review: false
+    )
+  end
+
+  # ─────────────────────────────────────────────
+  # TESTS
+  # ─────────────────────────────────────────────
+  desc "Ejecuta los tests unitarios"
+  lane :test do
+    run_tests(
+      scheme: "MyFuel",
+      device: "iPhone 15",
+      clean: true
+    )
+  end
+
+  # ─────────────────────────────────────────────
+  # SCREENSHOTS
+  # ─────────────────────────────────────────────
+  desc "Genera screenshots para App Store"
+  lane :screenshots do
+    capture_screenshots(
+      scheme: "MyFuel",
+      devices: ["iPhone 15 Pro", "iPhone 15 Pro Max", "iPad Pro (12.9-inch)"]
+    )
+  end
+
+  # ─────────────────────────────────────────────
+  # CODE SIGNING (Match)
+  # ─────────────────────────────────────────────
+  desc "Sincroniza certificados con Match"
+  lane :sync_certs do
+    match(
+      type: "appstore",
+      app_identifier: "com.myfuel.mobile",
+      readonly: true
+    )
+  end
+
+end
