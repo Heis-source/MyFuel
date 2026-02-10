@@ -1,2 +1,13 @@
 node_modules
 .env
+
+# Android
+android-native/build/
+android-native/app/build/
+android-native/.gradle/
+android-native/.idea/
+android-native/local.properties
+android-native/*.keystore
+android-native/keystore.properties
+android-native/*.apk
+android-native/*.aab
