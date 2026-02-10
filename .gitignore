@@ -11,27 +11,18 @@ yarn-error.log*
 .DS_Store
 
 # Android
-.gradle/
-build/
-captures/
-.externalNativeBuild/
-.cxx/
-local.properties
-*.iml
-.idea/
-*.keystore
-!debug.keystore
-keystore.properties
-
-# Android specific (inside folders)
-android-native/**/.gradle/
-android-native/**/build/
-android-native/**/local.properties
-android-native/**/.idea/
-android-native/**/*.iml
+android-native/build/
+android-native/app/build/
+android-native/.gradle/
+android-native/.idea/
+android-native/local.properties
+android-native/*.iml
+android-native/*.keystore
+android-native/keystore.properties
+android-native/*.apk
+android-native/*.aab
 
 # iOS / macOS
-.DS_Store
 ios-native/build/
 ios-native/DerivedData/
 ios-native/*.pbxuser
@@ -45,12 +36,12 @@ ios-native/fastlane/report.xml
 ios-native/fastlane/screenshots/**/*.png
 ios-native/*.ipa
 
-# Expo
+# Expo (legacy)
 mobile/.expo/
 mobile/node_modules/
-mobile/npm-debug.log*
-mobile/yarn-debug.log*
-mobile/yarn-error.log*
+
+# Data dumps
+*.xml
 
 # Misc
 *.swp

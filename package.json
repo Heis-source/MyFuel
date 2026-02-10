@@ -17,6 +17,7 @@
     "debug": "^2.6.9",
     "dotenv": "^17.2.4",
     "ejs": "^4.0.1",
+    "expo-location": "^19.0.8",
     "express": "^5.2.1",
     "express-validator": "^7.3.1",
     "fast-xml-parser": "^5.3.4",
@@ -29,6 +30,7 @@
     "nodemon": "^3.1.11",
     "pm2": "^6.0.14",
     "pug": "^3.0.3",
+    "react-native-maps": "^1.27.1",
     "socks5-https-client": "^1.2.1"
   }
 }

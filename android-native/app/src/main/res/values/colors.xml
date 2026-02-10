@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- Primary Colors -->
+    <color name="primary">#1e3a8a</color>
+    <color name="primary_dark">#1e40af</color>
+    <color name="primary_light">#3b82f6</color>
+    
+    <!-- Accent Colors -->
+    <color name="accent">#f97316</color>
+    
+    <!-- Background Colors -->
+    <color name="background">#FFFFFF</color>
+    <color name="panel_background">#F5FFFFFF</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#1f2937</color>
+    <color name="text_secondary">#64748b</color>
+</resources>
