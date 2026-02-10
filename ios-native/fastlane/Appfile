@@ -1,0 +1,6 @@
+app_identifier("com.myfuel.mobile")
+apple_id("tu-apple-id@email.com") # Tu Apple ID
+
+# Para usar con App Store Connect API:
+# team_id("TU_TEAM_ID")
+# itc_team_id("TU_ITC_TEAM_ID")
