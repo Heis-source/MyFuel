@@ -1,105 +1,108 @@
-# MyFuel 🚗⚡
+# MyFuel 🚗⛽⚡
 
-Plataforma para encontrar gasolineras y cargadores eléctricos cercanos con precios en tiempo real.
+API REST + Bot de Telegram para consultar **gasolineras** y **cargadores eléctricos** cercanos en tiempo real en España.
 
-## 🧩 Componentes
+## 🌐 Producción
 
-| Componente       | Tecnología            | Descripción                                          |
-| ---------------- | --------------------- | ---------------------------------------------------- |
-| **Backend API**  | Node.js + Express     | API REST que sirve datos de gasolineras y cargadores |
-| **Bot Telegram** | node-telegram-bot-api | Bot que envía precios al compartir ubicación         |
-| **App Android**  | Kotlin + MVVM         | App nativa con Google Maps                           |
-| **App iOS**      | Swift + SwiftUI       | App nativa con Apple Maps                            |
+| Servicio         | URL                                              |
+| :--------------- | :----------------------------------------------- |
+| **API**          | `https://myfuel-app.onrender.com`                |
+| **Bot Telegram** | [@MiGasolineraBot](https://t.me/MiGasolineraBot) |
 
-## 📁 Estructura del Proyecto
+## 📡 Endpoints API
+
+### `GET /`
+
+Información de la API (health check).
+
+### `GET /apiv1/nearby?lat=<lat>&lon=<lon>`
+
+Devuelve las **20 gasolineras** y **20 cargadores EV** más cercanos a las coordenadas dadas.
+
+**Ejemplo:**
+
+```
+GET https://myfuel-app.onrender.com/apiv1/nearby?lat=43.263&lon=-2.935
+```
+
+### `GET /apiv1/chargers`
+
+Devuelve la lista completa de cargadores eléctricos en España (datos DGT).
+
+## 🤖 Bot de Telegram
+
+El bot [@MiGasolineraBot](https://t.me/MiGasolineraBot) responde a:
+
+- `/start` — Muestra mensaje de bienvenida con botón de ubicación
+- **Ubicación** — Envía las 3 gasolineras y 3 cargadores más cercanos con precios, distancia y enlace a Google Maps
+
+## 🏗️ Arquitectura
 
 ```
 MyFuel/
-├── index.js                 # Entry point (Bot + API server)
-├── app.js                   # Express app configuration
-├── package.json             # Dependencias Node.js
-├── ecosystem.config.js      # Configuración PM2
-├── .env                     # Variables de entorno
+├── index.js                    # Punto de entrada: Bot + servidor Express
+├── app.js                      # Configuración Express (API pura JSON)
 ├── lib/
-│   ├── botHandlers.js       # Handlers del bot Telegram
-│   ├── chargerService.js    # Servicio de cargadores EV (DGT XML)
-│   ├── fuelService.js       # Servicio de gasolineras (Ministerio)
-│   ├── supabaseClient.js    # Cliente Supabase
-│   └── utils.js             # Utilidades compartidas
+│   ├── botHandlers.js          # Handlers del bot de Telegram
+│   ├── fuelService.js          # Servicio gasolineras MINETUR (con caché 30min)
+│   ├── chargerService.js       # Servicio cargadores DGT (con caché 1h)
+│   ├── supabaseClient.js       # Cliente Supabase para historial
+│   └── utils.js                # Utilidades (Haversine, formateo)
 ├── router/apiv1/
-│   ├── nearby.js            # GET /apiv1/nearby?lat=&lon=
-│   └── chargers.js          # GET /apiv1/chargers
-├── android-native/          # App Android nativa (ver README propio)
-└── ios-native/              # App iOS nativa (ver README propio)
+│   ├── nearby.js               # Endpoint /apiv1/nearby
+│   └── chargers.js             # Endpoint /apiv1/chargers
+├── android-native/             # App Android nativa
+├── ios-native/                 # App iOS nativa
+└── package.json
 ```
-
-## 🚀 Instalación
-
-```bash
-# Clonar el repositorio
-git clone <url-del-repo>
-cd MyFuel
-
-# Instalar dependencias
-npm install
-```
-
-## ⚙️ Configuración
-
-Crea un archivo `.env` en la raíz:
-
-```env
-TELEGRAM_API_TOKEN=<token del bot de Telegram>
-SUPABASE_URL=<URL de tu proyecto Supabase>
-SUPABASE_KEY=<API key anon de Supabase>
-```
-
-## ▶️ Ejecución
-
-```bash
-# Desarrollo (con hot reload)
-npm run dev
-
-# Producción
-npm start
-
-# Con PM2 (recomendado para producción)
-npx pm2 start ecosystem.config.js
-```
-
-## 📡 API Endpoints
-
-| Método | Ruta              | Parámetros   | Descripción                       |
-| ------ | ----------------- | ------------ | --------------------------------- |
-| GET    | `/apiv1/nearby`   | `lat`, `lon` | Gasolineras y cargadores cercanos |
-| GET    | `/apiv1/chargers` | —            | Todos los cargadores EV de España |
-
-### Ejemplo
-
-```bash
-curl "http://localhost:3000/apiv1/nearby?lat=43.2627&lon=-2.9253"
-```
-
-## 🤖 Bot Telegram
-
-1. Busca el bot en Telegram
-2. Envía `/start`
-3. Comparte tu ubicación
-4. Recibirás los precios de las 3 gasolineras más cercanas
 
 ## 📱 Apps Nativas
 
-- **Android**: Abre `android-native/` en Android Studio → [README](android-native/README.md)
-- **iOS**: Abre `ios-native/MyFuel.xcodeproj` en Xcode → [README](ios-native/README.md)
+Las apps móviles consumen la API desplegada en Render:
 
-## 🔧 Tecnologías
+- **Android**: `android-native/` — Kotlin/Jetpack Compose
+- **iOS**: `ios-native/` — Swift/SwiftUI
 
-- **Backend**: Node.js, Express 5, Supabase
-- **Datos**: API del Ministerio (gasolineras) + DGT/MITERD (cargadores EV)
-- **Bot**: node-telegram-bot-api
-- **Android**: Kotlin, Google Maps SDK, Retrofit, MVVM
-- **iOS**: Swift 5.9, SwiftUI, MapKit, URLSession, MVVM
+**URL base para las apps:** `https://myfuel-app.onrender.com`
 
-## 📄 Licencia
+## 🔧 Desarrollo Local
 
-Proyecto privado.
+```bash
+# Instalar dependencias
+npm install
+
+# Crear archivo .env con las variables necesarias
+cp .env.example .env
+
+# Ejecutar en modo desarrollo
+npm run dev
+```
+
+### Variables de Entorno
+
+| Variable             | Descripción                         |
+| :------------------- | :---------------------------------- |
+| `TELEGRAM_API_TOKEN` | Token del bot de Telegram           |
+| `SUPABASE_URL`       | URL del proyecto Supabase           |
+| `SUPABASE_KEY`       | Key anónima de Supabase             |
+| `PORT`               | Puerto del servidor (default: 3000) |
+
+> ⚠️ **No ejecutes el bot localmente y en Render al mismo tiempo.** Telegram solo permite una conexión de polling por token. Si necesitas desarrollo local, para el servicio en Render primero.
+
+## 🚀 Despliegue
+
+El proyecto está desplegado en **Render** (plan Free):
+
+- **Repositorio:** [github.com/Heis-source/MyFuel](https://github.com/Heis-source/MyFuel)
+- **Rama de despliegue:** `deploy/iOS`
+- **Auto-deploy:** Sí (cada push a `deploy/iOS` despliega automáticamente)
+- **Build command:** `npm install`
+- **Start command:** `node index.js`
+
+## 📊 Fuentes de Datos
+
+| Fuente                                                                                                              | Tipo       | Datos                                 |
+| :------------------------------------------------------------------------------------------------------------------ | :--------- | :------------------------------------ |
+| [MINETUR](https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres) | REST JSON  | Precios de combustible en tiempo real |
+| [DGT DATEX II](https://infocar.dgt.es/datex2/v3/miterd/EnergyInfrastructureTablePublication/electrolineras.xml)     | XML        | Infraestructura de carga eléctrica    |
+| [Supabase](https://supabase.com)                                                                                    | PostgreSQL | Historial de consultas                |

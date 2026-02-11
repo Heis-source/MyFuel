@@ -6,15 +6,9 @@ final class NetworkService {
 
     // MARK: - Configuration
 
-    /// Cambia esta URL según el entorno:
-    /// - Simulador iOS:  http://localhost:3000/
-    /// - Dispositivo físico: http://<TU_IP>:3000/
-    /// - Producción: https://api.myfuel.com/
-    #if targetEnvironment(simulator)
-    static let baseURL = "http://localhost:3000"
-    #else
-    static let baseURL = "http://192.168.0.56:3000"
-    #endif
+    /// URL del backend en producción (Render).
+    /// Para desarrollo local: cambiar a "http://localhost:3000"
+    static let baseURL = "https://myfuel-app.onrender.com"
 
     static let shared = NetworkService()
 

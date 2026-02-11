@@ -7,10 +7,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    // IMPORTANT: Change this to your backend URL
-    // For local testing on emulator: use 10.0.2.2 instead of localhost
-    // For local testing on physical device: use your computer's IP address (e.g., 192.168.0.56)
-    private const val BASE_URL = "http://10.0.2.2:3000/"
+    // URL del backend en producción (Render)
+    // Para desarrollo local con emulador: "http://10.0.2.2:3000/"
+    // Para desarrollo local con dispositivo físico: "http://<TU_IP>:3000/"
+    private const val BASE_URL = "https://myfuel-app.onrender.com/"
     
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
