@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      name="viewport"
+    />
+    <title>MyFuel — Gasolineras y Cargadores</title>
+    <meta
+      name="description"
+      content="Encuentra las gasolineras y cargadores eléctricos más cercanos con los mejores precios."
+    />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+
+    <!-- Leaflet -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#135bec",
+              "primary-light": "#e8effd",
+              "bg-main": "#f6f6f8",
+              surface: "#ffffff",
+              "surface-alt": "#f0f1f5",
+              "accent-red": "#ef4444",
+              "accent-green": "#22c55e",
+            },
+            fontFamily: {
+              display: ["Inter", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "0.5rem",
+              lg: "0.75rem",
+              xl: "1rem",
+              "2xl": "1.25rem",
+              "3xl": "1.5rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body
+    class="bg-bg-main font-display text-slate-800 h-screen w-screen overflow-hidden flex flex-col antialiased"
+  >
+    <!-- ======================== MAP SECTION (Top ~60%) ======================== -->
+    <div
+      id="map-container"
+      class="relative w-full flex-shrink-0"
+      style="height: 60%"
+    >
+      <div id="map" class="absolute inset-0 z-0"></div>
+
+      <!-- Filter Chips (floating over map) -->
+      <div
+        class="absolute top-0 left-0 w-full z-[1000] pt-12 px-4 pointer-events-none"
+      >
+        <div
+          class="flex gap-2 overflow-x-auto no-scrollbar pointer-events-auto pb-2"
+        >
+          <button class="filter-chip active" data-filter="all">
+            <span class="material-icons text-[14px] mr-1"
+              >local_gas_station</span
+            >Todo
+          </button>
+          <button class="filter-chip" data-filter="diesel">Diésel</button>
+          <button class="filter-chip" data-filter="gasolina95">
+            Gasolina 95
+          </button>
+          <button class="filter-chip" data-filter="electrico">
+            <span
+              class="w-1.5 h-1.5 rounded-full bg-accent-green inline-block mr-1.5"
+            ></span
+            >Eléctrico
+          </button>
+        </div>
+      </div>
+
+      <!-- My Location FAB -->
+      <div class="absolute bottom-4 right-4 z-[1000]">
+        <button
+          id="btn-locate"
+          class="h-12 w-12 bg-white rounded-full flex items-center justify-center text-primary shadow-lg shadow-black/10 active:scale-95 transition-transform border border-slate-200/60"
+        >
+          <span class="material-icons">my_location</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ======================== BOTTOM SHEET ======================== -->
+    <div
+      id="bottom-sheet"
+      class="flex-1 w-full bg-white rounded-t-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.08)] flex flex-col relative z-20 -mt-6 border-t border-slate-200/50"
+    >
+      <!-- Drag Handle -->
+      <div
+        class="w-full flex justify-center pt-3 pb-1 cursor-grab active:cursor-grabbing"
+      >
+        <div class="w-10 h-1 rounded-full bg-slate-300"></div>
+      </div>
+
+      <!-- Header -->
+      <div
+        class="px-5 py-3 flex items-center justify-between border-b border-slate-100"
+      >
+        <h2 class="text-lg font-semibold text-slate-800 tracking-tight">
+          Estaciones Cercanas
+        </h2>
+        <div
+          id="sort-toggle"
+          class="flex items-center space-x-1 text-primary text-xs font-medium cursor-pointer hover:underline"
+        >
+          <span>Precio: Menor a Mayor</span>
+          <span class="material-icons text-base">expand_more</span>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div
+        id="loading-state"
+        class="flex-1 flex flex-col items-center justify-center gap-3 p-6"
+      >
+        <div
+          class="animate-spin h-8 w-8 border-3 border-primary border-t-transparent rounded-full"
+        ></div>
+        <p class="text-sm text-slate-400">Buscando estaciones cercanas...</p>
+      </div>
+
+      <!-- Empty State -->
+      <div
+        id="empty-state"
+        class="flex-1 flex-col items-center justify-center gap-3 p-6 hidden"
+      >
+        <span class="material-icons text-4xl text-slate-300">location_off</span>
+        <p class="text-sm text-slate-400 text-center">
+          Activa la ubicación para encontrar estaciones cercanas
+        </p>
+        <button
+          id="btn-retry"
+          class="mt-2 px-5 py-2 bg-primary text-white rounded-full text-sm font-medium shadow-md shadow-primary/20"
+        >
+          Intentar de nuevo
+        </button>
+      </div>
+
+      <!-- Station List -->
+      <div
+        id="station-list"
+        class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-3 pb-8 hidden"
+      >
+        <!-- Cards rendered by JS -->
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
