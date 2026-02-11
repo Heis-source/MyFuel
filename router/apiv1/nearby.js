@@ -4,10 +4,11 @@ const express = require('express');
 const router = express.Router();
 const fuelService = require('../../lib/fuelService');
 const chargerService = require('../../lib/chargerService');
+const { getDistance } = require('../../lib/utils');
 
 /**
  * GET /apiv1/nearby
- * Returns top 5 fuel stations and top 5 EV chargers sorted by distance.
+ * Devuelve las gasolineras y cargadores EV más cercanos ordenados por distancia.
  * Query params: lat, lon
  */
 router.get('/', async (req, res, next) => {
@@ -15,7 +16,7 @@ router.get('/', async (req, res, next) => {
         const { lat, lon } = req.query;
 
         if (!lat || !lon) {
-            return res.status(400).json({ success: false, error: 'Latitude and longitude are required' });
+            return res.status(400).json({ success: false, error: 'Se requieren latitud y longitud' });
         }
 
         const latNum = parseFloat(lat);
@@ -26,9 +27,8 @@ router.get('/', async (req, res, next) => {
             chargerService.getChargers()
         ]);
 
-        // Process chargers (already normalized by service, just need to calculate distance and sort)
+        // Calcular distancia de cargadores y ordenar
         const nearbyChargers = chargers.map(c => {
-            const { getDistance } = require('../../lib/utils');
             const d = getDistance(latNum, lonNum, c.latitude, c.longitude);
             return { ...c, distance: d };
         }).sort((a, b) => a.distance - b.distance).slice(0, 20);
@@ -42,7 +42,7 @@ router.get('/', async (req, res, next) => {
         });
     } catch (err) {
         console.error('API Error /nearby:', err);
-        res.status(500).json({ success: false, error: 'Internal server error' });
+        res.status(500).json({ success: false, error: 'Error interno del servidor' });
     }
 });
 

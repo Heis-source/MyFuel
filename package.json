@@ -14,7 +14,6 @@
     "cross-env": "^7.0.3",
     "debug": "^2.6.9",
     "dotenv": "^17.2.4",
-    "ejs": "^4.0.1",
     "express": "^5.2.1",
     "fast-xml-parser": "^5.3.4",
     "http-errors": "^2.0.1",

@@ -1,21 +1,21 @@
-'use strict'
+'use strict';
+
+require('dotenv').config();
 
 const TelegramBot = require('node-telegram-bot-api');
 const { handleStart, handleLocation, handleText } = require('./lib/botHandlers');
-require('dotenv').config();
 
-// Initialize the bot
+// --- Iniciar Bot de Telegram ---
 const bot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true });
 
-// Register Event Handlers
 bot.onText(/^\/start/, (msg) => handleStart(bot, msg));
 bot.on('location', (msg) => handleLocation(bot, msg));
 bot.on('text', (msg) => handleText(bot, msg));
 
-console.log('--- Bot MyFuel (Refactorizado) iniciado ---');
+console.log('--- Bot MyFuel iniciado ---');
 console.log('Escuchando comandos y ubicaciones...');
 
-// --- Start Express Server ---
+// --- Iniciar Servidor Express (API) ---
 const app = require('./app');
 const http = require('http');
 const port = process.env.PORT || '3000';
@@ -23,9 +23,8 @@ app.set('port', port);
 const server = http.createServer(app);
 
 server.listen(port, '0.0.0.0', () => {
-    console.log(`--- Servidor Web MyFuel iniciado en puerto ${port} ---`);
-    console.log(`Acceso Local: http://localhost:${port}`);
-    console.log(`Acceso Red: http://192.168.0.56:${port}`);
+    console.log(`--- API MyFuel iniciada en puerto ${port} ---`);
+    console.log(`URL: http://localhost:${port}`);
 });
 
 server.on('error', (error) => {

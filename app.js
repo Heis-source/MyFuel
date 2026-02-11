@@ -1,24 +1,16 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var app = express();
+'use strict';
 
-
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'html');
-app.engine('html', require('ejs').__express);
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const app = express();
 
 // Configurar cabeceras y CORS
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.header('Access-Control-Allow-Methods', 'GET, PATCH, PUT, POST, DELETE, OPTIONS');
-  
-  // Responder a solicitudes pre-flight
+
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
@@ -29,30 +21,37 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-// app.use(express.static(path.join(__dirname, 'public')));
 
 app.locals.title = 'MyFuel';
 
-
+// --- Rutas API ---
 app.use('/apiv1/chargers', require('./router/apiv1/chargers'));
 app.use('/apiv1/nearby', require('./router/apiv1/nearby'));
 
-// Frontend removed as per user request
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+// Ruta raíz informativa (no es un frontend, solo confirma que la API está activa)
+app.get('/', (req, res) => {
+  res.json({
+    name: 'MyFuel API',
+    version: '1.0.0',
+    endpoints: [
+      'GET /apiv1/nearby?lat=<lat>&lon=<lon>',
+      'GET /apiv1/chargers'
+    ],
+    status: 'ok'
+  });
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+// Manejo de errores — respuesta JSON (sin vistas HTML)
+app.use((req, res) => {
+  res.status(404).json({ success: false, error: 'Ruta no encontrada' });
+});
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+app.use((err, req, res, next) => {
+  console.error('Error:', err.message);
+  res.status(err.status || 500).json({
+    success: false,
+    error: process.env.NODE_ENV === 'production' ? 'Error interno del servidor' : err.message
+  });
 });
 
 module.exports = app;
