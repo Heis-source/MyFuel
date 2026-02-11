@@ -22,7 +22,7 @@ router.get('/', async (req, res, next) => {
         const lonNum = parseFloat(lon);
 
         const [fuelStations, chargers] = await Promise.all([
-            fuelService.getNearbyFuelStations(latNum, lonNum, 5),
+            fuelService.getNearbyFuelStations(latNum, lonNum, 20),
             chargerService.getChargers()
         ]);
 
@@ -31,7 +31,7 @@ router.get('/', async (req, res, next) => {
             const { getDistance } = require('../../lib/utils');
             const d = getDistance(latNum, lonNum, c.latitude, c.longitude);
             return { ...c, distance: d };
-        }).sort((a, b) => a.distance - b.distance).slice(0, 5);
+        }).sort((a, b) => a.distance - b.distance).slice(0, 20);
 
         res.json({
             success: true,
