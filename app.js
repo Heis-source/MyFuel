@@ -5,21 +5,62 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const app = express();
 
-// Configurar cabeceras y CORS
+app.set('trust proxy', 1);
+app.disable('x-powered-by');
+
+function parseCsvEnv(value) {
+  if (!value || typeof value !== 'string') return [];
+  return value.split(',').map((entry) => entry.trim()).filter(Boolean);
+}
+
+const allowedOrigins = parseCsvEnv(process.env.ALLOWED_ORIGINS);
+const allowAllCors =
+  process.env.CORS_ALLOW_ALL === 'true' ||
+  (process.env.NODE_ENV !== 'production' && allowedOrigins.length === 0);
+
+if (process.env.NODE_ENV === 'production' && !allowAllCors && allowedOrigins.length === 0) {
+  console.warn('[security] ALLOWED_ORIGINS is empty. Browser cross-origin requests will be rejected.');
+}
+
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+
+  if ((req.secure || req.headers['x-forwarded-proto'] === 'https') && process.env.NODE_ENV === 'production') {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+
+  next();
+});
+
+// Configurar CORS
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  if (allowAllCors) {
+    res.header('Access-Control-Allow-Origin', '*');
+  } else if (origin && allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Vary', 'Origin');
+  } else if (origin) {
+    if (req.method === 'OPTIONS') return res.sendStatus(403);
+    return res.status(403).json({ success: false, error: 'Origen no permitido' });
+  }
+
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Methods', 'GET, PATCH, PUT, POST, DELETE, OPTIONS');
 
   if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
+    return res.sendStatus(204);
   }
   next();
 });
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(logger(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: false, limit: '10kb' }));
 app.use(cookieParser());
 
 app.locals.title = 'MyFuel';

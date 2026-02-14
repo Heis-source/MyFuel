@@ -119,5 +119,7 @@ AAB en: `app/build/outputs/bundle/release/app-release.aab`
 
 - NO subir `keystore.properties` a Git
 - NO subir `*.keystore` a Git
+- NO subir `secrets.properties` a Git
 - Guardar keystore y passwords de forma segura
 - Usar variables de entorno en CI/CD
+- Restringir Google Maps API Key por package + SHA-1

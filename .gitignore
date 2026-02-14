@@ -19,6 +19,7 @@ android-native/local.properties
 android-native/*.iml
 android-native/*.keystore
 android-native/keystore.properties
+android-native/secrets.properties
 android-native/*.apk
 android-native/*.aab
 

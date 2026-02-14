@@ -2,18 +2,39 @@
 
 require('dotenv').config();
 
-const TelegramBot = require('node-telegram-bot-api');
+const { Telegraf } = require('telegraf');
 const { handleStart, handleLocation, handleText } = require('./lib/botHandlers');
 
 // --- Iniciar Bot de Telegram ---
-const bot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, { polling: true });
+const telegramToken = process.env.TELEGRAM_API_TOKEN;
+let bot = null;
 
-bot.onText(/^\/start/, (msg) => handleStart(bot, msg));
-bot.on('location', (msg) => handleLocation(bot, msg));
-bot.on('text', (msg) => handleText(bot, msg));
+if (!telegramToken) {
+    console.warn('[telegram] TELEGRAM_API_TOKEN no definido. El bot no se iniciará.');
+} else {
+    bot = new Telegraf(telegramToken);
 
-console.log('--- Bot MyFuel iniciado ---');
-console.log('Escuchando comandos y ubicaciones...');
+    bot.start((ctx) => handleStart(ctx));
+    bot.on('location', (ctx) => handleLocation(ctx));
+    bot.on('text', (ctx) => handleText(ctx));
+
+    bot.catch((err, ctx) => {
+        const chatId = ctx?.chat?.id || 'unknown';
+        console.error(`[telegram] Error procesando update para chat ${chatId}:`, err.message);
+    });
+
+    bot.launch({ dropPendingUpdates: true })
+        .then(() => {
+            console.log('--- Bot MyFuel iniciado con Telegraf ---');
+            console.log('Escuchando comandos y ubicaciones...');
+        })
+        .catch((err) => {
+            console.error('[telegram] No se pudo iniciar el bot:', err.message);
+        });
+
+    process.once('SIGINT', () => bot.stop('SIGINT'));
+    process.once('SIGTERM', () => bot.stop('SIGTERM'));
+}
 
 // --- Iniciar Servidor Express (API) ---
 const app = require('./app');

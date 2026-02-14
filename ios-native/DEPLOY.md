@@ -183,7 +183,7 @@ bundle exec fastlane match development
 ## ⚠️ Checklist Pre-Deploy
 
 - [ ] Backend URL configurada correctamente (producción)
-- [ ] NSAppTransportSecurity desactivado (HTTPS en producción)
+- [ ] NSAppTransportSecurity configurado (NSAllowsArbitraryLoads=false en producción)
 - [ ] Version y Build incrementados
 - [ ] Code signing configurado con certificado de distribución
 - [ ] Info.plist con descripción de permiso de ubicación
@@ -248,7 +248,8 @@ xcrun simctl list devices
 - Verificar que el backend esté corriendo (`npm start`)
 - Para simulador, `localhost` funciona directamente
 - Para dispositivo físico, usar IP local del PC
-- Verificar que `NSAllowsArbitraryLoads` está activado en Info.plist
+- Verificar que `NSAllowsArbitraryLoads` está en `false` y usar HTTPS en producción
+- En desarrollo local HTTP, usar solo excepciones de `localhost/127.0.0.1` o túnel HTTPS
 
 ### Error: "Location permission denied"
 

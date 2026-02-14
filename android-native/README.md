@@ -31,15 +31,23 @@ private const val BASE_URL = "http://10.0.2.2:3000/"
 private const val BASE_URL = "http://192.168.0.56:3000/"
 ```
 
-### 3. Verificar Google Maps API Key
+### 3. Configurar Google Maps API Key (local)
 
-La API Key ya está configurada en `AndroidManifest.xml`:
+1. Crea `secrets.properties` en `android-native/` a partir de la plantilla:
 
-```xml
-<meta-data
-    android:name="com.google.android.geo.API_KEY"
-    android:value="AIzaSyC9HeXjwIISNBSLavdTu-Pcnde7zms40Zw" />
+```bash
+cp android-native/secrets.properties.example android-native/secrets.properties
 ```
+
+2. Edita `secrets.properties` y añade tu clave real:
+
+```properties
+MAPS_API_KEY=TU_API_KEY_REAL
+```
+
+3. El proyecto inyecta la clave en `AndroidManifest.xml` con `${MAPS_API_KEY}`.
+
+> `secrets.properties` está ignorado por Git y no debe subirse al repositorio.
 
 ## 🏃 Ejecutar en Modo Debug
 
@@ -224,9 +232,9 @@ La app solicita automáticamente:
 
 ### Google Maps API Key
 
-- La API Key actual está configurada para desarrollo
-- Para producción, crea una nueva API Key con restricciones apropiadas
-- Configura restricciones por package name: `com.myfuel.mobile`
+- Configura la API Key en `secrets.properties` (local, fuera de Git)
+- Para producción, crea una clave nueva y rota cualquier clave previamente expuesta
+- Restringe la clave por **Android app**: package `com.myfuel.mobile` + **SHA-1** del certificado
 
 ## 🐛 Troubleshooting
 

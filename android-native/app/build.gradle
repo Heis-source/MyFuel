@@ -14,6 +14,7 @@ android {
         targetSdk 34
         versionCode 1
         versionName "1.0.0"
+        manifestPlaceholders = [usesCleartextTraffic: "false"]
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -21,10 +22,12 @@ android {
     buildTypes {
         release {
             minifyEnabled true
+            manifestPlaceholders = [usesCleartextTraffic: "false"]
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
+            manifestPlaceholders = [usesCleartextTraffic: "true"]
         }
     }
     
@@ -40,6 +43,11 @@ android {
     buildFeatures {
         viewBinding true
     }
+}
+
+secrets {
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "local.defaults.properties"
 }
 
 dependencies {

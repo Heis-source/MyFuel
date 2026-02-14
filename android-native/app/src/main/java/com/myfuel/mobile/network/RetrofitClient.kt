@@ -1,5 +1,6 @@
 package com.myfuel.mobile.network
 
+import com.myfuel.mobile.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -13,7 +14,11 @@ object RetrofitClient {
     private const val BASE_URL = "https://myfuel-app.onrender.com/"
     
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
-        level = HttpLoggingInterceptor.Level.BODY
+        level = if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor.Level.BASIC
+        } else {
+            HttpLoggingInterceptor.Level.NONE
+        }
     }
     
     private val okHttpClient = OkHttpClient.Builder()

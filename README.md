@@ -86,6 +86,11 @@ npm run dev
 | `SUPABASE_URL`       | URL del proyecto Supabase           |
 | `SUPABASE_KEY`       | Key anónima de Supabase             |
 | `PORT`               | Puerto del servidor (default: 3000) |
+| `ALLOWED_ORIGINS`    | Lista CORS permitida separada por comas |
+| `CORS_ALLOW_ALL`     | Permite CORS global (`true` solo en local) |
+| `RATE_LIMIT_WINDOW_MS` | Ventana de rate limit en ms       |
+| `RATE_LIMIT_NEARBY_MAX` | Máx. peticiones por IP a `/apiv1/nearby` |
+| `RATE_LIMIT_CHARGERS_MAX` | Máx. peticiones por IP a `/apiv1/chargers` |
 
 > ⚠️ **No ejecutes el bot localmente y en Render al mismo tiempo.** Telegram solo permite una conexión de polling por token. Si necesitas desarrollo local, para el servicio en Render primero.
 
