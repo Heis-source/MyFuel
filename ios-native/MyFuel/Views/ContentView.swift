@@ -10,8 +10,12 @@ struct ContentView: View {
     @StateObject private var viewModel = FuelViewModel()
     @StateObject private var locationManager = LocationManager()
 
+    @Environment(\.scenePhase) private var scenePhase
+
     @State private var cameraPosition: MapCameraPosition = .automatic
     @State private var hasInitialLoad = false
+    @State private var lastFetchLocation: CLLocation?
+    @State private var lastFetchAt: Date?
 
     var body: some View {
         ZStack {
@@ -35,15 +39,48 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            locationManager.requestLocation()
+            locationManager.startTracking()
+        }
+        .onChange(of: scenePhase) { _, phase in
+            switch phase {
+            case .active:
+                locationManager.startTracking()
+            case .inactive, .background:
+                locationManager.stopUpdating()
+            @unknown default:
+                break
+            }
         }
         .onChange(of: locationManager.userLocation) { _, newLocation in
-            guard let location = newLocation, !hasInitialLoad else { return }
-            hasInitialLoad = true
-            cameraPosition = .region(MKCoordinateRegion(
-                center: location,
-                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-            ))
+            guard let location = newLocation else { return }
+
+            // Setear cámara solo una vez (no forzamos seguimiento de cámara para no "pelear" con el usuario).
+            if !hasInitialLoad {
+                hasInitialLoad = true
+                cameraPosition = .region(MKCoordinateRegion(
+                    center: location,
+                    span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                ))
+            }
+
+            // Ubicación constante, pero evitamos spamear el backend con cada update.
+            // Reglas: refrescar si han pasado >= 20s o si te has movido >= 150m.
+            let now = Date()
+            let newLoc = CLLocation(latitude: location.latitude, longitude: location.longitude)
+            let shouldFetchByTime: Bool = {
+                guard let lastFetchAt else { return true }
+                return now.timeIntervalSince(lastFetchAt) >= 20
+            }()
+            let shouldFetchByDistance: Bool = {
+                guard let lastFetchLocation else { return true }
+                return newLoc.distance(from: lastFetchLocation) >= 150
+            }()
+
+            guard shouldFetchByTime || shouldFetchByDistance else { return }
+            lastFetchAt = now
+            lastFetchLocation = newLoc
+
+            // Precisión exacta: no redondeamos coordenadas.
             viewModel.fetchNearbyStations(coordinate: location)
         }
         .alert("Error", isPresented: .constant(isErrorState)) {
@@ -200,13 +237,15 @@ struct ContentView: View {
 
     private func refreshAction() {
         if let location = locationManager.userLocation {
+            lastFetchAt = Date()
+            lastFetchLocation = CLLocation(latitude: location.latitude, longitude: location.longitude)
             cameraPosition = .region(MKCoordinateRegion(
                 center: location,
                 span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
             ))
             viewModel.fetchNearbyStations(coordinate: location)
         } else {
-            locationManager.requestLocation()
+            locationManager.startTracking()
         }
     }
 }

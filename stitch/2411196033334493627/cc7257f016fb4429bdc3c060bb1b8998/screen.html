@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Buscador Gasolineras Claro V2</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1e3a8a","background-light": "#ffffff",
+                        "surface-light": "#f9fafb",
+                        "accent-red": "#f87171","border-light": "#e5e7eb",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>.map-bg {
+            background-color: #f3f4f6;
+            background-image: 
+                radial-gradient(#e5e7eb 1px, transparent 1px),
+                linear-gradient(to right, #e5e7eb 1px, transparent 1px);
+            background-size: 40px 40px, 80px 80px;
+        }.no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }.glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light font-display text-slate-800 h-screen w-screen overflow-hidden flex flex-col antialiased">
+<div class="relative h-[60%] w-full map-bg overflow-hidden">
+<img alt="Map Background" class="absolute inset-0 w-full h-full object-cover opacity-20 mix-blend-multiply pointer-events-none filter grayscale brightness-110" data-alt="Light monochrome minimalist map view of city streets" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCE_63YE24OtZYJrSOhLcjCdWnZrtRa1-pvIqMR20OyF15YXIIfnMlLuozIAyWgVnc4C58MDCxSj8UGJh7Bj15a3w2cXgvI6_t7_B3S5q-ibPZVTABb2CVrbzJGwx9XrOqgA8AT1mJcZ3_s2RKea_vRID7cB2atnQmYQeq9SPJlAvTk7u2-r8Apz42Sb2Irfu206NFEIHf_ejAkA3YadKJsZ_bZG1Rx2eniXmsU3l5CUkhOVWNs9jVtFq4awDXZ6z8MZHdhc70D7VU"/>
+<div class="absolute inset-0 z-10 p-4 flex flex-col justify-between pointer-events-none">
+<div class="w-full pointer-events-auto">
+</div>
+<div class="absolute top-1/3 left-1/4 transform -translate-x-1/2 -translate-y-1/2 pointer-events-auto group cursor-pointer">
+<div class="relative flex flex-col items-center">
+<div class="bg-white px-2.5 py-1 rounded-lg shadow-md border border-slate-100 mb-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+<span class="text-xs font-bold text-slate-800">1.62€</span>
+</div>
+<div class="h-4 w-4 rounded-full bg-primary border-2 border-white shadow-sm"></div>
+</div>
+</div>
+<div class="absolute top-1/2 right-1/4 transform translate-x-1/2 -translate-y-1/2 pointer-events-auto cursor-pointer">
+<div class="relative flex flex-col items-center">
+<div class="bg-accent-red px-2.5 py-1 rounded-lg shadow-md border border-red-400/20 mb-1 z-20">
+<span class="text-xs font-bold text-white">1.49€</span>
+</div>
+<div class="h-3 w-3 rounded-full bg-accent-red border-2 border-white shadow-sm"></div>
+</div>
+</div>
+<div class="absolute bottom-1/3 left-1/2 transform -translate-x-1/2 translate-y-1/2 pointer-events-auto cursor-pointer">
+<div class="h-3 w-3 rounded-full bg-slate-400 border-2 border-white shadow-sm"></div>
+</div>
+<div class="absolute bottom-24 right-4 pointer-events-auto z-30">
+<button class="h-12 w-12 bg-white rounded-full flex items-center justify-center text-slate-700 shadow-md border border-slate-100 active:scale-95 transition-transform hover:text-primary">
+<span class="material-icons">my_location</span>
+</button>
+</div>
+</div>
+</div>
+<div class="h-[45%] w-full bg-white rounded-t-3xl shadow-[0_-5px_20px_rgba(0,0,0,0.05)] flex flex-col relative z-20 -mt-8 border-t border-slate-100">
+<div class="w-full flex justify-center pt-3 pb-1 cursor-grab active:cursor-grabbing">
+<div class="w-10 h-1 rounded-full bg-slate-200"></div>
+</div>
+<div class="px-6 py-3 flex items-center justify-between border-b border-transparent">
+<h2 class="text-lg font-semibold text-slate-900 tracking-tight">Nearby Stations</h2>
+</div>
+<div class="flex-1 overflow-y-auto no-scrollbar px-6 pb-8">
+<div class="group relative py-4 flex items-center justify-between border-b border-slate-100 cursor-pointer">
+<div class="absolute top-4 right-0 flex items-center gap-2">
+<span class="text-[10px] font-bold text-accent-red bg-red-50 px-2 py-0.5 rounded-full">BEST PRICE</span>
+</div>
+<div class="flex items-center gap-4 mt-5">
+<div class="h-10 w-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden shrink-0">
+<div class="w-5 h-5 bg-yellow-400 rounded-sm relative">
+<div class="absolute top-0 w-full h-1/2 bg-red-500 rounded-t-sm"></div>
+</div>
+</div>
+<div>
+<h3 class="text-slate-900 font-medium text-sm leading-tight mb-1">Shell Express</h3>
+<div class="flex items-center text-slate-400 text-xs font-light">
+<span class="material-icons text-[12px] mr-1 text-slate-300">near_me</span>
+<span>1.2 km</span>
+<span class="mx-1.5 text-slate-300">•</span>
+<span>Calle Mayor, 45</span>
+</div>
+</div>
+</div>
+<div class="text-right mt-6">
+<div class="text-xl font-bold text-primary tracking-tight">1.49<span class="text-sm align-top font-normal text-slate-400 ml-0.5">€</span></div>
+</div>
+</div>
+<div class="py-4 flex items-center justify-between border-b border-slate-100 cursor-pointer hover:bg-slate-50/50 -mx-2 px-2 transition-colors">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden shrink-0">
+<div class="w-5 h-5 rounded-full border-2 border-green-500 flex items-center justify-center">
+<div class="w-2.5 h-2.5 bg-yellow-400 rounded-full"></div>
+</div>
+</div>
+<div>
+<h3 class="text-slate-900 font-medium text-sm leading-tight mb-1">BP Connect</h3>
+<div class="flex items-center text-slate-400 text-xs font-light">
+<span class="material-icons text-[12px] mr-1 text-slate-300">near_me</span>
+<span>2.4 km</span>
+<span class="mx-1.5 text-slate-300">•</span>
+<span>Av. de América</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-xl font-bold text-primary tracking-tight">1.54<span class="text-sm align-top font-normal text-slate-400 ml-0.5">€</span></div>
+</div>
+</div>
+<div class="py-4 flex items-center justify-between border-b border-slate-100 cursor-pointer hover:bg-slate-50/50 -mx-2 px-2 transition-colors">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden shrink-0">
+<div class="w-5 h-5 bg-orange-500 rounded-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 w-3 h-3 bg-primary rounded-bl-full"></div>
+</div>
+</div>
+<div>
+<h3 class="text-slate-900 font-medium text-sm leading-tight mb-1">Repsol</h3>
+<div class="flex items-center text-slate-400 text-xs font-light">
+<span class="material-icons text-[12px] mr-1 text-slate-300">near_me</span>
+<span>3.1 km</span>
+<span class="mx-1.5 text-slate-300">•</span>
+<span>Paseo Castellana</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-xl font-bold text-primary tracking-tight">1.62<span class="text-sm align-top font-normal text-slate-400 ml-0.5">€</span></div>
+</div>
+</div>
+<div class="py-4 flex items-center justify-between border-b border-slate-100 cursor-pointer hover:bg-slate-50/50 -mx-2 px-2 transition-colors opacity-60">
+<div class="flex items-center gap-4">
+<div class="h-10 w-10 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center overflow-hidden shrink-0 grayscale">
+<div class="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-[8px]">G</div>
+</div>
+<div>
+<h3 class="text-slate-800 font-medium text-sm leading-tight mb-1">Galp (Closed)</h3>
+<div class="flex items-center text-slate-400 text-xs font-light">
+<span class="material-icons text-[12px] mr-1 text-slate-300">near_me</span>
+<span>4.5 km</span>
+<span class="mx-1.5 text-slate-300">•</span>
+<span>Autovía A-2</span>
+</div>
+</div>
+</div>
+<div class="text-right">
+<div class="text-xl font-bold text-slate-400 tracking-tight">1.59<span class="text-sm align-top font-normal text-slate-300 ml-0.5">€</span></div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

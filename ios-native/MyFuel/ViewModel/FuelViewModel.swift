@@ -42,6 +42,7 @@ final class FuelViewModel: ObservableObject {
     @Published var chargers: [Charger] = []
 
     private let networkService: NetworkService
+    private var currentFetchTask: Task<Void, Never>?
 
     init(networkService: NetworkService = .shared) {
         self.networkService = networkService
@@ -50,26 +51,30 @@ final class FuelViewModel: ObservableObject {
     /// Obtiene estaciones cercanas a las coordenadas dadas.
     func fetchNearbyStations(latitude: Double, longitude: Double) {
         uiState = .loading
-
-        Task {
+        currentFetchTask?.cancel()
+        currentFetchTask = Task { [weak self] in
+            guard let self else { return }
             do {
-                let response = try await networkService.fetchNearbyStations(
+                let response = try await self.networkService.fetchNearbyStations(
                     latitude: latitude,
                     longitude: longitude
                 )
 
                 if response.success {
-                    fuelStations = response.results.fuelStations
-                    chargers = response.results.chargers
-                    uiState = .success(
+                    self.fuelStations = response.results.fuelStations
+                    self.chargers = response.results.chargers
+                    self.uiState = .success(
                         fuelStations: response.results.fuelStations,
                         chargers: response.results.chargers
                     )
                 } else {
-                    uiState = .error(message: "Error al obtener datos")
+                    self.uiState = .error(message: "Error al obtener datos")
                 }
+            } catch is CancellationError {
+                // Ignorar: se canceló por una request más nueva.
             } catch {
-                uiState = .error(message: error.localizedDescription)
+                // Mensaje estable (no filtra detalles internos).
+                self.uiState = .error(message: "No se pudo cargar la información. Revisa tu conexión e inténtalo de nuevo.")
             }
         }
     }
