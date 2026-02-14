@@ -6,7 +6,7 @@ Objetivo: reducir superficie de ataque real en API, bot y apps móviles sin romp
 ## 1) Backend API (Node/Express)
 
 ### Cambio: cabeceras de seguridad, CORS controlado y límites de payload
-- Archivo: `app.js`
+- Archivo: `api/app.js`
 - Qué se hizo:
   - Se desactivó `x-powered-by`.
   - Se añadieron cabeceras defensivas (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, `HSTS` en producción HTTPS).
@@ -28,7 +28,7 @@ Referencias:
 - https://owasp.org/API-Security/
 
 ### Cambio: rate limiting por IP
-- Archivos: `lib/rateLimiter.js`, `router/apiv1/nearby.js`, `router/apiv1/chargers.js`
+- Archivos: `api/lib/rateLimiter.js`, `api/router/apiv1/nearby.js`, `api/router/apiv1/chargers.js`
 - Qué se hizo:
   - Middleware propio en memoria con ventana configurable (`RATE_LIMIT_WINDOW_MS`).
   - Límites separados:
@@ -44,7 +44,7 @@ Referencias:
 - https://owasp.org/API-Security/editions/2023/en/0xa4-unrestricted-resource-consumption/
 
 ### Cambio: validación estricta de coordenadas
-- Archivo: `router/apiv1/nearby.js`
+- Archivo: `api/router/apiv1/nearby.js`
 - Qué se hizo:
   - Validación explícita de `lat`/`lon`:
     - Deben existir.
@@ -60,7 +60,7 @@ Referencias:
 ## 2) Bot de Telegram
 
 ### Cambio: sanitización HTML y enlaces seguros
-- Archivos: `lib/utils.js`, `lib/botHandlers.js`
+- Archivos: `api/lib/utils.js`, `api/lib/botHandlers.js`
 - Qué se hizo:
   - Se añadió `escapeHtml()` para neutralizar caracteres peligrosos en modo `parse_mode: "HTML"`.
   - Se escaparon valores externos (marca, dirección, conectores, precios) antes de interpolar en mensajes.
@@ -76,7 +76,7 @@ Referencias:
 - https://owasp.org/www-community/attacks/xss/
 
 ### Cambio: filtrado de coordenadas inválidas en feed de combustible
-- Archivo: `lib/fuelService.js`
+- Archivo: `api/lib/fuelService.js`
 - Qué se hizo:
   - Parseo defensivo de lat/lon y descarte de estaciones con coordenadas inválidas.
 - Por qué:

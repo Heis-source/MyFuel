@@ -40,17 +40,18 @@ El bot [@MiGasolineraBot](https://t.me/MiGasolineraBot) responde a:
 
 ```
 MyFuel/
-├── index.js                    # Punto de entrada: Bot + servidor Express
-├── app.js                      # Configuración Express (API pura JSON)
-├── lib/
-│   ├── botHandlers.js          # Handlers del bot de Telegram
-│   ├── fuelService.js          # Servicio gasolineras MINETUR (con caché 30min)
-│   ├── chargerService.js       # Servicio cargadores DGT (con caché 1h)
-│   ├── supabaseClient.js       # Cliente Supabase para historial
-│   └── utils.js                # Utilidades (Haversine, formateo)
-├── router/apiv1/
-│   ├── nearby.js               # Endpoint /apiv1/nearby
-│   └── chargers.js             # Endpoint /apiv1/chargers
+├── api/
+│   ├── index.js                # Punto de entrada: Bot + servidor Express
+│   ├── app.js                  # Configuración Express (API pura JSON)
+│   ├── lib/
+│   │   ├── botHandlers.js      # Handlers del bot de Telegram
+│   │   ├── fuelService.js      # Servicio gasolineras MINETUR (con caché 30min)
+│   │   ├── chargerService.js   # Servicio cargadores DGT (con caché 1h)
+│   │   ├── supabaseClient.js   # Cliente Supabase para historial
+│   │   └── utils.js            # Utilidades (Haversine, formateo)
+│   └── router/apiv1/
+│       ├── nearby.js           # Endpoint /apiv1/nearby
+│       └── chargers.js         # Endpoint /apiv1/chargers
 ├── android-native/             # App Android nativa
 ├── ios-native/                 # App iOS nativa
 └── package.json
@@ -102,7 +103,7 @@ El proyecto está desplegado en **Render** (plan Free):
 - **Rama de despliegue:** `deploy/iOS`
 - **Auto-deploy:** Sí (cada push a `deploy/iOS` despliega automáticamente)
 - **Build command:** `npm install`
-- **Start command:** `node index.js`
+- **Start command:** `node api/index.js`
 
 ## 📊 Fuentes de Datos
 

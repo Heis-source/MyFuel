@@ -20,8 +20,8 @@
 
 ## Archivos clave tocados (contexto reciente)
 
-- `index.js`: arranque bot con Telegraf + manejo errores/shutdown.
-- `lib/botHandlers.js`: handlers migrados a `ctx`.
+- `api/index.js`: arranque bot con Telegraf + manejo errores/shutdown.
+- `api/lib/botHandlers.js`: handlers migrados a `ctx`.
 - `package.json` / `package-lock.json`: dependencia `telegraf` activa; removida dependencia anterior.
 - `TELEGRAM_MIGRATION.md`: detalle funcional/técnico de la migración.
 - `SECURITY_CHANGES.md`: log general de cambios de seguridad del proyecto.
@@ -47,7 +47,7 @@ Integración móvil:
 ## Riesgos/pendientes conocidos
 
 1. `supabaseClient` sigue haciendo `process.exit(1)` si faltan variables de entorno, lo que puede tumbar bot/API al arrancar.
-2. Bot y API siguen en el mismo proceso (`index.js`); en producción convendría separarlos.
+2. Bot y API siguen en el mismo proceso (`api/index.js`); en producción convendría separarlos.
 3. Faltan tests automáticos del flujo Telegram (start/location/text).
 4. El contrato de cargadores ahora normaliza tipos (`latitude/longitude` number, `power` number|null) y descarta cargadores sin coordenadas válidas.
 5. iOS: tracking constante puede incrementar consumo de batería y red; se aplica throttle de refresh (>=20s o >=150m) en UI.
