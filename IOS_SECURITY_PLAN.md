@@ -75,6 +75,6 @@ Archivo:
 
 ## Pendientes opcionales (si se eleva el listón)
 
-1. Pinning TLS (release-only) para `my-fuel-three.vercel.app`.
+1. Pinning TLS (release-only) para `myfuel-app.onrender.com`.
 2. Separar configuración de backend por build config sin editar código.
 3. Añadir tests unitarios (URL building, throttle, cancelación de tasks).

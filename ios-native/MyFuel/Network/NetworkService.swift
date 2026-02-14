@@ -8,7 +8,7 @@ final class NetworkService {
 
     /// URL del backend en producción (Render).
     /// Para desarrollo local: cambiar a "http://localhost:3000"
-    static let baseURL = "https://my-fuel-three.vercel.app"
+    static let baseURL = "https://myfuel-app.onrender.com"
 
     static let shared = NetworkService()
 

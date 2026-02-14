@@ -11,7 +11,7 @@ object RetrofitClient {
     // URL del backend en producción (Render)
     // Para desarrollo local con emulador: "http://10.0.2.2:3000/"
     // Para desarrollo local con dispositivo físico: "http://<TU_IP>:3000/"
-    private const val BASE_URL = "https://my-fuel-three.vercel.app/"
+    private const val BASE_URL = "https://myfuel-app.onrender.com/"
     
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = if (BuildConfig.DEBUG) {

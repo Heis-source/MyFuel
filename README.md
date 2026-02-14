@@ -6,7 +6,7 @@ API REST + Bot de Telegram para consultar **gasolineras** y **cargadores eléctr
 
 | Servicio         | URL                                              |
 | :--------------- | :----------------------------------------------- |
-| **API**          | `https://my-fuel-three.vercel.app`               |
+| **API**          | `https://myfuel-app.onrender.com`                |
 | **Bot Telegram** | [@MiGasolineraBot](https://t.me/MiGasolineraBot) |
 
 ## 📡 Endpoints API
@@ -22,7 +22,7 @@ Devuelve las **20 gasolineras** y **20 cargadores EV** más cercanos a las coord
 **Ejemplo:**
 
 ```
-GET https://my-fuel-three.vercel.app/apiv1/nearby?lat=43.263&lon=-2.935
+GET https://myfuel-app.onrender.com/apiv1/nearby?lat=43.263&lon=-2.935
 ```
 
 ### `GET /apiv1/chargers`
@@ -64,7 +64,7 @@ Las apps móviles consumen la API desplegada en Render:
 - **Android**: `android-native/` — Kotlin/Jetpack Compose
 - **iOS**: `ios-native/` — Swift/SwiftUI
 
-**URL base para las apps:** `https://my-fuel-three.vercel.app`
+**URL base para las apps:** `https://myfuel-app.onrender.com`
 
 ## 🔧 Desarrollo Local
 
