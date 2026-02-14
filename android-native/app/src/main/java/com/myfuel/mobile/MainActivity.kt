@@ -1,6 +1,7 @@
 package com.myfuel.mobile
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var toggleGroup: MaterialButtonToggleGroup
     private lateinit var refreshButton: MaterialButton
+    private lateinit var stitchPreviewButton: MaterialButton
     private lateinit var loadingView: View
     
     private val viewModel: MainViewModel by viewModels()
@@ -67,6 +69,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // Initialize views
         toggleGroup = findViewById(R.id.toggleGroup)
         refreshButton = findViewById(R.id.refreshButton)
+        stitchPreviewButton = findViewById(R.id.stitchPreviewButton)
         loadingView = findViewById(R.id.loadingView)
         
         // Set up map
@@ -95,6 +98,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 // If no location, try to get it again
                 enableMyLocation()
             }
+        }
+
+        stitchPreviewButton.setOnClickListener {
+            startActivity(Intent(this, StitchGasFinderActivity::class.java))
         }
         
         // Observe ViewModel state
