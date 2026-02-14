@@ -41,9 +41,6 @@ ios-native/*.ipa
 mobile/.expo/
 mobile/node_modules/
 
-# Data dumps
-*.xml
-
 # Misc
 *.swp
 *~

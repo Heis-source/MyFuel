@@ -15,7 +15,8 @@ final class NetworkService {
     private let session: URLSession
 
     private init() {
-        let config = URLSessionConfiguration.default
+        // Ephemeral: evita caché/cookies persistentes (menos exposición de datos).
+        let config = URLSessionConfiguration.ephemeral
         config.timeoutIntervalForRequest = 30
         config.timeoutIntervalForResource = 30
         session = URLSession(configuration: config)

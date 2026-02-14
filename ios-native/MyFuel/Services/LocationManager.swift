@@ -11,16 +11,21 @@ final class LocationManager: NSObject, ObservableObject {
     @Published var locationError: String?
 
     private let manager = CLLocationManager()
+    private var wantsTracking = false
 
     override init() {
         super.init()
         manager.delegate = self
+        // Máxima precisión: el usuario ha pedido ubicación exacta.
         manager.desiredAccuracy = kCLLocationAccuracyBest
-        manager.distanceFilter = 50 // Actualizar cada 50m
+        manager.distanceFilter = 25 // Actualizar cada ~25m (ajustable)
+        manager.pausesLocationUpdatesAutomatically = true
+        manager.allowsBackgroundLocationUpdates = false
     }
 
-    /// Solicita permisos de ubicación y comienza a rastrear.
-    func requestLocation() {
+    /// Empieza el tracking mientras la app está activa (foreground).
+    func startTracking() {
+        wantsTracking = true
         switch manager.authorizationStatus {
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
@@ -33,8 +38,9 @@ final class LocationManager: NSObject, ObservableObject {
         }
     }
 
-    /// Detiene el rastreo de ubicación.
+    /// Detiene el tracking (por ejemplo, al ir a background).
     func stopUpdating() {
+        wantsTracking = false
         manager.stopUpdatingLocation()
     }
 }
@@ -49,7 +55,9 @@ extension LocationManager: CLLocationManagerDelegate {
         switch manager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
             locationError = nil
-            manager.startUpdatingLocation()
+            if wantsTracking {
+                manager.startUpdatingLocation()
+            }
         case .denied, .restricted:
             locationError = "Permiso de ubicación denegado. Actívalo en Ajustes."
         case .notDetermined:
