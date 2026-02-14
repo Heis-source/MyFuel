@@ -41,9 +41,8 @@ Descarga (URLs salen de Stitch en `htmlCode.downloadUrl` y `screenshot.downloadU
 
 Integración móvil:
 - iOS: WKWebView cargando HTML del bundle (ver snippet en la respuesta del 2026-02-14).
-- Android: WebView cargando HTML desde `android_asset/`:
-  - Preferible: copiar `screen.es.local.html` a `android-native/.../src/main/assets/` (y `assets/*` a la misma carpeta) y hacer `webView.loadUrl("file:///android_asset/screen.es.local.html")`.
-  - Si el HTML depende de CDN (Tailwind/fonts), requiere red; si se quiere offline, hay que bundlearlos o reemplazar por CSS local.
+- Android (prod): Google Maps nativo con marcadores (gasolineras/cargadores). Sin navegación dentro de la app; al tocar el recurso se redirige a la app de mapas elegida por el usuario (Intent `ACTION_VIEW` con URI `geo:lat,lon?q=lat,lon(label)`).
+- Android (solo preview): WebView cargando HTML desde `android_asset/` puede servir como referencia visual, pero no sustituye un Google Map real si ese es el requisito.
 
 ## Riesgos/pendientes conocidos
 
