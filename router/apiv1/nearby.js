@@ -53,15 +53,12 @@ router.get('/', nearbyRateLimiter, async (req, res, next) => {
         ]);
 
         // Calcular distancia de cargadores y ordenar
+        // Nota: chargerService ya normaliza latitude/longitude a number y filtra inválidos.
         const nearbyChargers = chargers
-            .map(c => {
-                const cLat = Number(c.latitude);
-                const cLon = Number(c.longitude);
-                if (!Number.isFinite(cLat) || !Number.isFinite(cLon)) return null;
-                const d = getDistance(latNum, lonNum, cLat, cLon);
-                return { ...c, latitude: cLat, longitude: cLon, distance: d };
+            .map((c) => {
+                const d = getDistance(latNum, lonNum, c.latitude, c.longitude);
+                return { ...c, distance: d };
             })
-            .filter(Boolean)
             .sort((a, b) => a.distance - b.distance)
             .slice(0, MAX_RESULTS);
 

@@ -22,12 +22,14 @@
 - `package.json` / `package-lock.json`: dependencia `telegraf` activa; removida dependencia anterior.
 - `TELEGRAM_MIGRATION.md`: detalle funcional/técnico de la migración.
 - `SECURITY_CHANGES.md`: log general de cambios de seguridad del proyecto.
+- `API_DATA_CONTRACT.md`: contrato de datos publicado por `/apiv1/nearby` y `/apiv1/chargers`.
 
 ## Riesgos/pendientes conocidos
 
 1. `supabaseClient` sigue haciendo `process.exit(1)` si faltan variables de entorno, lo que puede tumbar bot/API al arrancar.
 2. Bot y API siguen en el mismo proceso (`index.js`); en producción convendría separarlos.
 3. Faltan tests automáticos del flujo Telegram (start/location/text).
+4. El contrato de cargadores ahora normaliza tipos (`latitude/longitude` number, `power` number|null) y descarta cargadores sin coordenadas válidas.
 
 ## Variables relevantes
 
