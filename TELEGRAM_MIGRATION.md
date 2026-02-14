@@ -34,7 +34,7 @@ Impacto:
 
 ## 2) Inicialización del bot (arranque)
 
-Archivo: `index.js`
+Archivo: `api/index.js`
 
 Qué se cambió:
 
@@ -58,7 +58,7 @@ Impacto:
 
 ## 3) Handlers migrados a contexto `ctx` de Telegraf
 
-Archivo: `lib/botHandlers.js`
+Archivo: `api/lib/botHandlers.js`
 
 Qué se cambió:
 
@@ -105,7 +105,7 @@ Resultado:
 
 ## Riesgos / notas conocidas
 
-- `lib/botHandlers.js` sigue importando `supabaseClient` al cargar módulo.
+- `api/lib/botHandlers.js` sigue importando `supabaseClient` al cargar módulo.
   - Si faltan `SUPABASE_URL` o `SUPABASE_KEY`, el proceso puede fallar al arrancar.
   - Esto es comportamiento heredado (no introducido por Telegraf).
 - Esta migración se hizo pensando en entorno no productivo; antes de producción conviene:

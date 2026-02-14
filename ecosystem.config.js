@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "myfuel",
-      script: "index.js",
+      script: "api/index.js",
       instances: 1,
       autorestart: true,
       watch: false,

@@ -4,8 +4,8 @@
   "private": true,
   "description": "Backend API + Telegram Bot for MyFuel (fuel stations & EV chargers)",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node api/index.js",
+    "dev": "nodemon api/index.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.95.3",
