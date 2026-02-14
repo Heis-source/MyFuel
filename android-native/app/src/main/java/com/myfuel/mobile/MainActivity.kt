@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -39,7 +40,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var toggleGroup: MaterialButtonToggleGroup
     private lateinit var refreshButton: MaterialButton
-    private lateinit var stitchPreviewButton: MaterialButton
     private lateinit var loadingView: View
     
     private val viewModel: MainViewModel by viewModels()
@@ -69,7 +69,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // Initialize views
         toggleGroup = findViewById(R.id.toggleGroup)
         refreshButton = findViewById(R.id.refreshButton)
-        stitchPreviewButton = findViewById(R.id.stitchPreviewButton)
         loadingView = findViewById(R.id.loadingView)
         
         // Set up map
@@ -98,10 +97,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 // If no location, try to get it again
                 enableMyLocation()
             }
-        }
-
-        stitchPreviewButton.setOnClickListener {
-            startActivity(Intent(this, StitchGasFinderActivity::class.java))
         }
         
         // Observe ViewModel state
@@ -137,6 +132,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             isZoomControlsEnabled = true
             isMyLocationButtonEnabled = true
             isCompassEnabled = true
+        }
+
+        // No navegamos dentro de la app: al tocar el "info window" se abre la app de mapas elegida por el usuario.
+        map.setOnInfoWindowClickListener { marker ->
+            openInMaps(marker.position, marker.title)
         }
         
         // Request location permission
@@ -266,6 +266,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
             
             map.addMarker(marker)
+        }
+    }
+
+    private fun openInMaps(position: LatLng, label: String?) {
+        val lat = position.latitude
+        val lon = position.longitude
+        val encodedLabel = Uri.encode(label ?: "Ubicación")
+        val uri = Uri.parse("geo:$lat,$lon?q=$lat,$lon($encodedLabel)")
+
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivity(intent)
+        } else {
+            Toast.makeText(this, "No hay una app de mapas disponible", Toast.LENGTH_SHORT).show()
         }
     }
     

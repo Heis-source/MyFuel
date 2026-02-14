@@ -33,11 +33,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".StitchGasFinderActivity"
-            android:exported="false"
-            android:label="UI Minimalista" />
     </application>
 
 </manifest>
